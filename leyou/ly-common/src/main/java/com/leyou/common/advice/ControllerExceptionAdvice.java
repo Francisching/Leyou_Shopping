@@ -17,4 +17,10 @@ public class ControllerExceptionAdvice {
 
         return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
     }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+
+        return ResponseEntity.status(500).body(ex.getMessage());
+    }
 }

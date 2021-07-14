@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: mybatis-plus-demo
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://ly-mysql:3306/mydb01?useSSL=false
+    username: root
+    password: root
+logging:
+  level:
+    cn.itcast: debug
+
+mybatis-plus:
+  type-aliases-package: cn.itcast.mbp.mapper
+  global-config:
+    db-config:
+      id-type: auto #全局配置

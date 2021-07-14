@@ -27,6 +27,7 @@ public abstract class BaseDTO {
      */
     public BaseDTO(BaseEntity entity) {
         if(entity != null){
+            //属性拷贝，不要求source和target的类型一致，但要求属性名称以及属性类型必须一致
             BeanUtils.copyProperties(entity, this);
         }
     }

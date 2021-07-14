@@ -1,13 +1,15 @@
-package com.leyou;
+package cn.itcast.mbp;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.leyou.item.mapper")
-public class LyItemApplication {
+@MapperScan("cn.itcast.mbp.mapper")
+public class MpDemoApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(LyItemApplication.class);
+        SpringApplication.run(MpDemoApplication.class, args);
     }
+
 }

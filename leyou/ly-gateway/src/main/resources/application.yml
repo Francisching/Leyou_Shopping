@@ -17,6 +17,22 @@ spring:
     name: ly-gateway
   cloud:
     gateway:
+      globalcors: # 全局的跨域处理
+        add-to-simple-url-handler-mapping: true # 是否将当前cors配置加入到SimpleUrlHandlerMapping中，解决options请求被拦截问题
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: # 允许哪些网站的跨域请求
+              - "http://manage.leyou.com"
+              - "http://www.leyou.com"
+            allowedMethods: # 允许的跨域ajax的请求方式
+              - "GET"
+              - "POST"
+              - "DELETE"
+              - "PUT"
+              - "OPTIONS"
+            allowedHeaders: "*" # 允许在请求中携带的头信息
+            allowCredentials: true # 是否允许携带cookie
+            maxAge: 360000 # 这次跨域检测的有效期
       default-filters: # 默认过滤项
         - StripPrefix=1 # 去除路由前缀
         - name: Hystrix # 指定过滤工厂名称（可以是任意过滤工厂类型）
@@ -26,9 +42,13 @@ spring:
         - name: RequestRateLimiter #请求数限流 名字不能随便写
           args:
             key-resolver: "#{@ipKeyResolver}" # SPEL,指定一个key生成器
-            redis-rate-limiter.replenishRate: 2 # 生成令牌的速率
-            redis-rate-limiter.burstCapacity: 2 # 桶的容量
-
+            redis-rate-limiter.replenishRate: 10 # 生成令牌的速率
+            redis-rate-limiter.burstCapacity: 10 # 桶的容量
+      routes:
+        - id: item-service #路由的唯一标识（id，和服务名无关）
+          uri: lb://item-service # 使用ribbon负载均衡，适配具体的服务实例
+          predicates: # 断言
+            - Path=/item/** #根据路径生效路由，生效条件是请求网关时，路径地址已item开始
 
   redis:
     host: ly-redis

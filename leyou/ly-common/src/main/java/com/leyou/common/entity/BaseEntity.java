@@ -7,6 +7,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BaseEntity {
+
     private Date createTime;
     private Date updateTime;
 
