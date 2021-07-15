@@ -50,6 +50,11 @@ spring:
           predicates: # 断言
             - Path=/item/** #根据路径生效路由，生效条件是请求网关时，路径地址已item开始
 
+        - id: auth-service # 授权服务
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
   redis:
     host: ly-redis
 

@@ -8,4 +8,10 @@ import java.util.List;
 
 public interface CategoryService extends IService<Category> {
     List<CategoryDTO> listCategoryByPid(Long pid);
+
+    CategoryDTO queryCategoryById(Long id);
+
+    List<CategoryDTO> listCategoryByIds(List<Long> ids);
+
+    List<CategoryDTO> listCategoryByBrand(Long bid);
 }

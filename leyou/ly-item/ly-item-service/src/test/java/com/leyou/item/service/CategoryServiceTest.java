@@ -27,4 +27,13 @@ public class CategoryServiceTest {
         List<CategoryDTO> categoryDTOS = this.categoryService.listCategoryByPid(0L);
         categoryDTOS.forEach(System.out::println);
     }
+
+    @Test
+    public void listCategoryByBrand(){
+        List<CategoryDTO> categoryDTOS = this.categoryService.listCategoryByBrand(8557L);
+
+        categoryDTOS.forEach(System.out::println);
+    }
+
+
 }
