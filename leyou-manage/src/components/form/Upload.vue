@@ -179,6 +179,8 @@
       removeSingle() {
         this.dialogImageUrl = "";
         this.$refs.singleUpload.clearFiles();
+        //TODO 1，向oss重新发起请求，把对应的url进行删除，
+          //TODO 用户很粗暴，没有标准化操作，直接关闭页面，也要删除此图片，只有对应的图片地址出现在数据库中也就是品牌新增成功
       }
     }
   }
