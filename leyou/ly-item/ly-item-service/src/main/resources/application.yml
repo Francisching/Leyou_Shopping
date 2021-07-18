@@ -18,6 +18,7 @@ eureka:
 logging:
   level:
     com.leyou: debug
+    org.springframework.jdbc.datasource: debug
 
 mybatis-plus:
   type-aliases-package: com.leyou.item.entity # 别名扫描包

@@ -2,6 +2,7 @@ package com.leyou.item.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.leyou.common.exception.LyException;
 import com.leyou.item.dto.CategoryDTO;
 import com.leyou.item.entity.Category;
 import com.leyou.item.entity.CategoryBrand;
@@ -10,6 +11,7 @@ import com.leyou.item.service.CategoryBrandService;
 import com.leyou.item.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
                 .stream()
                 .map(CategoryBrand::getCategoryId)
                 .collect(Collectors.toList());
+
+        if (CollectionUtils.isEmpty(categoryIds)){
+            throw new LyException(204,"对应分类不存在");
+        }
 
        return this.listCategoryByIds(categoryIds);
     }

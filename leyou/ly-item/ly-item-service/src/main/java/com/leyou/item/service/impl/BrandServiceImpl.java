@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leyou.common.dto.PageDTO;
+import com.leyou.common.exception.LyException;
 import com.leyou.item.dto.BrandDTO;
 import com.leyou.item.entity.Brand;
 import com.leyou.item.entity.CategoryBrand;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +115,11 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
                 .stream()
                 .map(CategoryBrand::getBrandId)
                 .collect(Collectors.toList());
+        //判断根据分类是否能找到对应的品牌
+        if (CollectionUtils.isEmpty(brandIds)){
+            throw new LyException(204,"对应品牌为空");
+        }
+
         return this.listBrandByIds(brandIds);
     }
 
