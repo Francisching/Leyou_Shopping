@@ -2,6 +2,7 @@ package com.leyou.item.web;
 
 import com.leyou.common.dto.PageDTO;
 import com.leyou.item.dto.SkuDTO;
+import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.dto.SpuDTO;
 import com.leyou.item.dto.SpuDetailDTO;
 import com.leyou.item.service.GoodsService;
@@ -96,12 +97,13 @@ public class GoodsController {
 
     /**
      * 商品新增，包含spu，sku以及spuDetail
+     *
      * @param spuDTO
      * @return
      */
     @PostMapping("/spu")
     public ResponseEntity<Void> addGoods(
-            @RequestBody SpuDTO spuDTO){
+            @RequestBody SpuDTO spuDTO) {
 
         this.goodsService.addGoods(spuDTO);
 
@@ -110,25 +112,41 @@ public class GoodsController {
 
     @PutMapping("/saleable")
     public ResponseEntity<Void> modifySaleable(
-            @RequestParam("id")Long spuId,
-            @RequestParam("saleable")Boolean saleable){
+            @RequestParam("id") Long spuId,
+            @RequestParam("saleable") Boolean saleable) {
 
-        this.goodsService.modifySaleable(spuId,saleable);
+        this.goodsService.modifySaleable(spuId, saleable);
         return ResponseEntity.ok().build();
     }
 
     /**
      * 商品修改，可能包含spu，sku以及spuDetail
+     *
      * @param spuDTO
      * @return
      */
     @PutMapping("/spu")
     public ResponseEntity<Void> update(
-            @RequestBody SpuDTO spuDTO){
+            @RequestBody SpuDTO spuDTO) {
 
         this.goodsService.update(spuDTO);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 根据商品id，查询商品对应的规格属性以及对应的值
+     *
+     * @param spuId
+     * @param searching
+     * @return
+     */
+    @GetMapping("/spec/value")
+    public ResponseEntity<List<SpecParamDTO>> listSpecWithValue(
+            @RequestParam("id") Long spuId,
+            @RequestParam(value = "searching", required = false) Boolean searching) {
+        return ResponseEntity.ok(this.goodsService.listSpecWithValue(spuId,searching));
+
     }
 
 }

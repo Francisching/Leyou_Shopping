@@ -26,6 +26,8 @@ public class SpecParamDTO extends BaseDTO {
     private String segments;
     private String options;
 
+    private Object value;
+
     public SpecParamDTO(BaseEntity entity) {
         super(entity);
     }

@@ -1,18 +1,18 @@
 package com.leyou.item.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.leyou.common.dto.PageDTO;
 import com.leyou.common.exception.LyException;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.item.dto.SkuDTO;
+import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.dto.SpuDTO;
 import com.leyou.item.dto.SpuDetailDTO;
 import com.leyou.item.entity.Sku;
 import com.leyou.item.entity.Spu;
 import com.leyou.item.entity.SpuDetail;
-import com.leyou.item.service.GoodsService;
-import com.leyou.item.service.SkuService;
-import com.leyou.item.service.SpuDetailService;
-import com.leyou.item.service.SpuService;
+import com.leyou.item.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private SpuDetailService spuDetailService;
+
+    @Autowired
+    private SpecParamService specParamService;
 
     @Override
     public PageDTO<SpuDTO> pageQuery(Integer page, Integer rows, Long brandId, Long categoryId, Long id, Boolean saleable) {
@@ -188,5 +192,47 @@ public class GoodsServiceImpl implements GoodsService {
             }
 
         }
+    }
+
+    @Override
+    public List<SpecParamDTO> listSpecWithValue(Long spuId, Boolean searching) {
+
+        //根据商品id查询对应的spu
+        Spu spu = this.spuService.getById(spuId);
+
+        if (null==spu){
+            throw new LyException(204,"此商品不存在");
+        }
+
+        //1,查询规格参数，
+        List<SpecParamDTO> specParamDTOS = this.specParamService.listSpecParam(null, spu.getCid3(), searching);
+
+        //判断查询条件下的规格参数是否存在
+        if (CollectionUtils.isEmpty(specParamDTOS)){
+
+            //TODO,如果商品在，规格，品牌，分类，三个有一个缺失，说明数据库被恶意删除了，一定要报警
+            throw new LyException(500,"商品对应的规格参数不存在");
+        }
+
+        //2,查询规格参数对应的属性值
+
+        SpuDetail spuDetail = this.spuDetailService.getById(spuId);
+
+        if (null==spuDetail){
+            throw new LyException(500,"对应的商品详情不存在");
+        }
+
+        //json字符串，1，java，map，2，js，对象,map的key，就是规格参数的id，就是specParamDTO.getId(),value就是对应的规格参数的值
+        Map<Long,Object> specParamMap =
+                JsonUtils.nativeRead(spuDetail.getSpecification(),
+                        new TypeReference<Map<Long,Object>>() {
+                }) ;
+
+        //3，适配规格参数以及属性值
+        specParamDTOS.forEach(specParamDTO -> specParamDTO.setValue(specParamMap.get(specParamDTO.getId())));
+
+
+
+        return specParamDTOS;
     }
 }

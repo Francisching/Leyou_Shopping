@@ -2,6 +2,7 @@ package com.leyou.item.service;
 
 import com.leyou.common.dto.PageDTO;
 import com.leyou.item.dto.SkuDTO;
+import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.dto.SpuDTO;
 import com.leyou.item.dto.SpuDetailDTO;
 
@@ -25,4 +26,6 @@ public interface GoodsService {
     void modifySaleable(Long spuId, Boolean saleable);
 
     void update(SpuDTO spuDTO);
+
+    List<SpecParamDTO> listSpecWithValue(Long spuId, Boolean searching);
 }
