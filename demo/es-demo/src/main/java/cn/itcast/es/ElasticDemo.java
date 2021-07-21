@@ -36,12 +36,15 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import reactor.core.publisher.Mono;
 
 import javax.naming.directory.SearchResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ElasticDemo {
 
@@ -70,6 +73,7 @@ public class ElasticDemo {
 
     /**
      * 索引库的创建和删除
+     *
      * @throws IOException
      */
     @Test
@@ -187,7 +191,7 @@ public class ElasticDemo {
         //武大，查询，分页，高亮，source过滤，排序
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
 
-        sourceBuilder.fetchSource(new String[]{"id","title","price"},null);
+        sourceBuilder.fetchSource(new String[]{"id", "title", "price"}, null);
 
 //        sourceBuilder.from(0);
 //        sourceBuilder.size(1);
@@ -195,7 +199,7 @@ public class ElasticDemo {
         sourceBuilder.sort(SortBuilders.fieldSort("id").order(SortOrder.DESC));
 
         //构建分词查询
-        sourceBuilder.query(QueryBuilders.matchQuery("title","数码"));
+        sourceBuilder.query(QueryBuilders.matchQuery("title", "数码"));
 
         //封装高亮条件
         HighlightBuilder highlightBuilder = new HighlightBuilder();
@@ -215,7 +219,7 @@ public class ElasticDemo {
         //命中的数量
         long value = hits.getTotalHits().value;
 
-        System.out.println("命中元素 = " + value+" 个");
+        System.out.println("命中元素 = " + value + " 个");
 
         SearchHit[] searchHits = hits.getHits();
 
@@ -241,8 +245,7 @@ public class ElasticDemo {
             goods.setTitle(highlightTitleResult);
 
 
-
-            System.out.println("得分："+score+" 对象："+goods);
+            System.out.println("得分：" + score + " 对象：" + goods);
         }
 
     }
@@ -257,7 +260,7 @@ public class ElasticDemo {
 
         //构建自动提示，对象
         SuggestBuilder suggestBuilder = new SuggestBuilder();
-        suggestBuilder.addSuggestion("heima",SuggestBuilders.completionSuggestion("name").prefix("s").size(30));
+        suggestBuilder.addSuggestion("heima", SuggestBuilders.completionSuggestion("name").prefix("s").size(30));
 
         sourceBuilder.suggest(suggestBuilder);
 
@@ -268,9 +271,9 @@ public class ElasticDemo {
 
         Suggest suggest = searchResponse.getSuggest();
 
-        suggest.getSuggestion("heima").forEach(sgt->{
-            sgt.getOptions().forEach(sgtResult->{
-                String suggestResult  = sgtResult.getText().toString();
+        suggest.getSuggestion("heima").forEach(sgt -> {
+            sgt.getOptions().forEach(sgtResult -> {
+                String suggestResult = sgtResult.getText().toString();
 
                 System.out.println("suggestResult = " + suggestResult);
 
@@ -309,6 +312,60 @@ public class ElasticDemo {
         Thread.sleep(2000);
     }
 
+    @Test
+    public void testASyncQuery() throws InterruptedException {
+
+        Mono<List<Goods>> listMono = this.aSyncQuery();
+
+        //使用subscribe订阅返回结果，:::测试案例有订阅，开发中坚决不能写订阅，如果写了订阅相当于破坏了异步逻辑，项目中的订阅，是web程序，webFlux
+        listMono.subscribe(System.out::println);
+        //Thread.sleep(10000);
+    }
+
+
+    //手动使用mono封装返回结果
+    public Mono<List<Goods>> aSyncQuery() {
+        SearchRequest searchRequest = new SearchRequest("goods");
+
+
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+
+        sourceBuilder.query(QueryBuilders.matchQuery("title", "数码"));
+
+        searchRequest.source(sourceBuilder);
+
+
+        return Mono.create(sink -> {
+            this.client.searchAsync(searchRequest, RequestOptions.DEFAULT, new ActionListener<SearchResponse>() {
+                @Override
+                public void onResponse(SearchResponse searchResponse) {
+
+                    SearchHit[] hits = searchResponse.getHits().getHits();
+
+
+//                for (SearchHit hit : hits) {
+//                    Goods goods = JSON.parseObject(hit.getSourceAsString(), Goods.class);
+//                }
+
+                    List<Goods> goodsList = Stream
+                            .of(hits)
+                            .map(hit -> JSON.parseObject(hit.getSourceAsString(), Goods.class))
+                            .collect(Collectors.toList());
+
+                    sink.success(goodsList);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                    System.out.println("对比起，不对外服务");
+                }
+            });
+
+        });
+
+
+    }
 
 
 }

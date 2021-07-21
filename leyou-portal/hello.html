@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>hello</title>
+</head>
+<body>
+<script src="node_modules/mathjs/dist/math.js"></script>
+<script>
+  // 自定义高精度浮点数运算
+  // 对象格式写法
+  let float_calculator={
+    /**
+     * 1.记录两个运算数小数点后的位数
+     * 2.将其转化为整数类型进行运算
+     * 3.移动小数点的位置
+     **/
+    add:function(arg1,arg2){
+      var r1,r2,m;
+      try{
+        //取小数位长度
+        r1=arg1.toString().split(".")[1].length;
+        r2=arg2.toString().split(".")[1].length;
+      }catch(e){
+        r1=0;r2=0;
+      }
+      m=Math.pow(10,Math.max(r1,r2));		//计算因子
+
+      return (arg1*m+arg2*m)/m;
+    },
+    minus:function(arg1,arg2){
+      return this.add(arg1,-arg2);
+    },
+    mul:function(arg1,arg2){
+      var r1,r2,m;
+      try{
+        //取小数位长度
+        r1=arg1.toString().split(".")[1].length;
+        r2=arg2.toString().split(".")[1].length;
+      }catch(e){
+        r1=0;r2=0;
+      }
+      m=Math.pow(10,Math.max(r1,r2));		//计算因子
+
+      return (arg1*m)*(arg2*m)/(m*m);
+    },
+    div:function(arg1,arg2){
+      if( arg2 == 0 ) return 0;
+      var t1=0,t2=0,r1,r2;
+      try{
+        t1=arg1.toString().split(".")[1].length;
+        t2=arg2.toString().split(".")[1].length;
+      }catch(e){}
+
+      with(Math){
+        r1=Number(arg1.toString().replace(".",""));
+        r2=Number(arg2.toString().replace(".",""));
+      }
+
+      return (r1/r2)*Math.pow(10,t2-t1);
+    }
+  };
+
+  console.log(float_calculator.add(0.1, 0.2))
+  console.log(float_calculator.minus(26.75, 20.01))
+</script>
+</body>
+</html>
