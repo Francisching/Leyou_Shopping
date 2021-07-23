@@ -1,9 +1,7 @@
 package com.leyou.search.client;
 
 import com.leyou.common.dto.PageDTO;
-import com.leyou.item.dto.SkuDTO;
-import com.leyou.item.dto.SpecParamDTO;
-import com.leyou.item.dto.SpuDTO;
+import com.leyou.item.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,4 +51,25 @@ public interface ItemClient {
     List<SpecParamDTO> listSpecWithValue(
             @RequestParam("id") Long spuId,
             @RequestParam(value = "searching", required = false) Boolean searching);
+
+
+    /**
+     * 根据id集合查询品牌对象
+     *
+     * @param ids
+     * @return
+     */
+    @GetMapping("/brand/list")
+    List<BrandDTO> listBrandByIds(
+            @RequestParam("ids") List<Long> ids);
+
+
+    /**
+     * 根据id集合查询对应的分类对象集合
+     *
+     * @param ids
+     * @return
+     */
+    @GetMapping("/category/list")
+    List<CategoryDTO> listCategoryByIds(@RequestParam("ids") List<Long> ids);
 }
