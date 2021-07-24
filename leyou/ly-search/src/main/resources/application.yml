@@ -5,6 +5,12 @@ spring:
   application:
     name: search-service
 
+  rabbitmq:
+    username: heima129
+    password: heima129
+    virtual-host: /haha
+    host: ly-mq
+
 
 eureka:
   client:

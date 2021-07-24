@@ -1,10 +1,10 @@
 package com.leyou.search.service.impl;
 
 import com.leyou.common.dto.PageDTO;
+import com.leyou.item.client.ItemClient;
 import com.leyou.item.dto.SkuDTO;
 import com.leyou.item.dto.SpecParamDTO;
 import com.leyou.item.dto.SpuDTO;
-import com.leyou.search.client.ItemClient;
 import com.leyou.search.entity.Goods;
 import com.leyou.search.repository.GoodsRepository;
 import com.leyou.search.service.IndexService;
@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -199,6 +200,38 @@ public class IndexServiceImpl implements IndexService {
 
         return goods;
     }
+
+
+    @Override
+    public void addGoods(Long spuId) {
+        //根据传入的spuId，查询对应的 spuDTO
+        PageDTO<SpuDTO> spuDTOPageDTO = this.itemClient.pageQuery(1, 1, null, null, spuId, null);
+
+        SpuDTO spuDTO = spuDTOPageDTO.getItems().get(0);
+
+        //把查询到的spuDTO转换为goods然后保存新增
+        this.goodsRepository.save(buildGoods(spuDTO));
+    }
+
+    @Override
+    public void deleteGoods(Long spuId) {
+        this.goodsRepository.deleteById(spuId);
+    }
+
+
+    @Override
+    public void modifyGoods(Boolean saleable, Long id) {
+        //上架新增
+        if (saleable){
+
+            addGoods(id);
+
+        }else{//下架
+            deleteGoods(id);
+        }
+    }
+
+
 
 
     private Object chooseSegment(SpecParamDTO p) {

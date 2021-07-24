@@ -14,6 +14,7 @@ import com.leyou.item.entity.Spu;
 import com.leyou.item.entity.SpuDetail;
 import com.leyou.item.service.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,11 +118,23 @@ public class GoodsServiceImpl implements GoodsService {
 
         this.skuService.saveBatch(skus);
 
+        //消息发送，实现，商品在数据库新增的同时，索引库也多个商品
+        this.amqpTemplate.convertAndSend("jhj", "item.up", spu.getId());
+
 //        log.debug(spuDTO.toString());
 //        log.debug(spuDTO.getSpuDetail().toString());
 //        spuDTO.getSkus().forEach(SkuDTO->log.debug(SkuDTO.toString()));
     }
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    /**
+     * 商品下架
+     *
+     * @param spuId
+     * @param saleable
+     */
     @Override
     @Transactional
     public void modifySaleable(Long spuId, Boolean saleable) {
@@ -137,6 +150,13 @@ public class GoodsServiceImpl implements GoodsService {
 
         //update tb_sku set saleable = #{saleable} where spu_id = #{spuId}
         this.skuService.update(sku, new QueryWrapper<Sku>().eq("spu_id", spuId));
+
+        //this.searchClient.modifyGoods(saleable,spuId);
+
+        String routingKey = saleable ? "item.up" : "item.down";
+
+        //消息发送，
+        this.amqpTemplate.convertAndSend("jhj", routingKey, spuId);
 
     }
 
@@ -200,37 +220,36 @@ public class GoodsServiceImpl implements GoodsService {
         //根据商品id查询对应的spu
         Spu spu = this.spuService.getById(spuId);
 
-        if (null==spu){
-            throw new LyException(204,"此商品不存在");
+        if (null == spu) {
+            throw new LyException(204, "此商品不存在");
         }
 
         //1,查询规格参数，
         List<SpecParamDTO> specParamDTOS = this.specParamService.listSpecParam(null, spu.getCid3(), searching);
 
         //判断查询条件下的规格参数是否存在
-        if (CollectionUtils.isEmpty(specParamDTOS)){
+        if (CollectionUtils.isEmpty(specParamDTOS)) {
 
             //TODO,如果商品在，规格，品牌，分类，三个有一个缺失，说明数据库被恶意删除了，一定要报警
-            throw new LyException(500,"商品对应的规格参数不存在");
+            throw new LyException(500, "商品对应的规格参数不存在");
         }
 
         //2,查询规格参数对应的属性值
 
         SpuDetail spuDetail = this.spuDetailService.getById(spuId);
 
-        if (null==spuDetail){
-            throw new LyException(500,"对应的商品详情不存在");
+        if (null == spuDetail) {
+            throw new LyException(500, "对应的商品详情不存在");
         }
 
         //json字符串，1，java，map，2，js，对象,map的key，就是规格参数的id，就是specParamDTO.getId(),value就是对应的规格参数的值
-        Map<Long,Object> specParamMap =
+        Map<Long, Object> specParamMap =
                 JsonUtils.nativeRead(spuDetail.getSpecification(),
-                        new TypeReference<Map<Long,Object>>() {
-                }) ;
+                        new TypeReference<Map<Long, Object>>() {
+                        });
 
         //3，适配规格参数以及属性值
         specParamDTOS.forEach(specParamDTO -> specParamDTO.setValue(specParamMap.get(specParamDTO.getId())));
-
 
 
         return specParamDTOS;

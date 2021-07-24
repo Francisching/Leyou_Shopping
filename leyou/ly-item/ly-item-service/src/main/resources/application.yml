@@ -10,6 +10,13 @@ spring:
     username: root
     password: root
 
+
+  rabbitmq:
+    username: heima129
+    password: heima129
+    virtual-host: /haha
+    host: ly-mq
+
 eureka:
   client:
     service-url:
@@ -26,3 +33,5 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto # id默认为自增长
+
+

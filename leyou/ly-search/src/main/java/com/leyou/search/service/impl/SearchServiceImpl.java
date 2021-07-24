@@ -1,7 +1,7 @@
 package com.leyou.search.service.impl;
 
 import com.leyou.common.exception.LyException;
-import com.leyou.search.client.ItemClient;
+import com.leyou.item.client.ItemClient;
 import com.leyou.search.dto.SearchParamDTO;
 import com.leyou.search.entity.Goods;
 import com.leyou.search.repository.GoodsRepository;
