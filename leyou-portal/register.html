@@ -194,6 +194,7 @@
             submit() {
                 this.$validator.validateAll().then(d => {
                     if (d) {
+
                         // 校验通过，提交表单
                         leyou.http.post("/user/info", leyou.stringify(this.user))
                             .then(resp => {

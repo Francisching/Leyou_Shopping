@@ -60,6 +60,10 @@ spring:
           predicates:
             - Path=/search/**
 
+        - id: user-service # 用户服务
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
   redis:
     host: ly-redis
 

@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 @CanalTable(value = "all")
 //EntryHandler中的map就是列和值的对应关系，insert tb_user (id,name,age) values(10086,"ldh",50),此时map中有三个键值对，分别为id：10086，所以，触发insert方法
-@Component
+//@Component
 public class CanalHandler implements EntryHandler<Map<String,String>> {
 
     @Autowired

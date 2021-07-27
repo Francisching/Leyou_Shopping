@@ -1,0 +1,44 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://ly-mysql:3306/heima?useSSL=false
+    username: root
+    password: root
+
+  rabbitmq:
+    host: ly-mq
+    username: heima129
+    password: heima129
+    virtual-host: /haha
+    publisher-confirms: true #开启发送确认
+    template:
+      retry:
+        multiplier: 2 #间隔倍数， 重试一定要能停的下来
+
+  redis:
+    host: ly-redis
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ly-registry:10086/eureka
+
+logging:
+  level:
+    com.leyou: debug
+    org.springframework.jdbc.datasource: debug
+
+mybatis-plus:
+  type-aliases-package: com.leyou.user.entity # 别名扫描包
+  # mapper-locations: classpath*: mappers/*.xml # mapper的xml文件地址
+  global-config:
+    db-config:
+      id-type: auto # id默认为自增长
+
+
