@@ -138,6 +138,8 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional
     public void modifySaleable(Long spuId, Boolean saleable) {
+        //TODO 基于spuId，拼接key，去redis中删除对应的缓存，
+
         //上下架处理，要同时对，spu和sku最关联处理
         Spu spu = new Spu();
         spu.setId(spuId);
@@ -155,8 +157,10 @@ public class GoodsServiceImpl implements GoodsService {
 
         String routingKey = saleable ? "item.up" : "item.down";
 
-        //消息发送，
+        //消息发送，同步es
         this.amqpTemplate.convertAndSend("jhj", routingKey, spuId);
+
+
 
     }
 

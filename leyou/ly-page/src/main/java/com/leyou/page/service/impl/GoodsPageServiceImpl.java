@@ -120,4 +120,9 @@ public class GoodsPageServiceImpl implements GoodsPageService {
         return json;
     }
 
+    @Override
+    public Boolean deleteSku(Long spuId){
+        return redisTemplate.delete(KEY_PREFIX_SKU + spuId);
+    }
+
 }

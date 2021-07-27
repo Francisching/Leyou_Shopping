@@ -39,4 +39,6 @@ public interface GoodsPageService {
      * @param categoryId 商品第三级分类id
      */
     String loadSpecData(Long categoryId);
+
+    Boolean deleteSku(Long spu_id);
 }
