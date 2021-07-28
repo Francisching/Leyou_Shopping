@@ -41,4 +41,14 @@ mybatis-plus:
     db-config:
       id-type: auto # id默认为自增长
 
+ly:
+  encoder:
+    crypt:
+      secret: ${random.uuid} # 随机的密钥，使用uuid
+      strength: 6 # 加密强度4~31，决定盐加密时的运算强度，超过10以后加密耗时会显著增加
+
+  auth:
+    clientId: user-service
+    secret: 1234
+
 

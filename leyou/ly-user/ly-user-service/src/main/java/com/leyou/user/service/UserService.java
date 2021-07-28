@@ -1,6 +1,7 @@
 package com.leyou.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.leyou.auth.dto.UserDetail;
 import com.leyou.user.dto.UserDTO;
 import com.leyou.user.entity.User;
 
@@ -12,4 +13,6 @@ public interface UserService extends IService<User> {
     void register(String username, String password, String phone, String code);
 
     UserDTO login(String username, String password);
+
+    UserDetail showUser(String token);
 }

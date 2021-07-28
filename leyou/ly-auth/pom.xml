@@ -14,6 +14,7 @@
     <modules>
         <module>ly-auth-pojo</module>
         <module>ly-auth-service</module>
+        <module>ly-auth-api</module>
     </modules>
 
 
