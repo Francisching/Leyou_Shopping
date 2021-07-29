@@ -1,15 +1,14 @@
 package com.leyou.user.web;
 
 import com.leyou.auth.dto.UserDetail;
+import com.leyou.auth.interceptors.LoginInterceptor;
+import com.leyou.auth.utils.UserContext;
 import com.leyou.user.dto.UserDTO;
 import com.leyou.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/info")
@@ -81,10 +80,13 @@ public class UserController {
         return ResponseEntity.ok(this.userService.login(username, password));
     }
 
+    /**
+     * 根据token获取用户的信息
+     * @return
+     */
     @GetMapping("/me")
-    public ResponseEntity<UserDetail> showUser(@CookieValue("LY_TOKEN") String token) {
-
-
-        return ResponseEntity.ok(this.userService.showUser(token));
+    public ResponseEntity<UserDetail> showUser() {
+        //从拦截器中拿现成的用户信息
+        return ResponseEntity.ok(UserContext.getUser());
     }
 }

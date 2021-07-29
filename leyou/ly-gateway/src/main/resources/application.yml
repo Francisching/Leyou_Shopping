@@ -70,3 +70,8 @@ spring:
 logging:
   level:
     com.leyou: debug
+
+ly:
+  auth:
+    clientId: api-gateway
+    secret: 1234

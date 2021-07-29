@@ -50,5 +50,7 @@ ly:
   auth:
     clientId: user-service
     secret: 1234
+    includeFilterPaths:
+      - /info/me #配置拦截路径只拦截指定路径
 
 

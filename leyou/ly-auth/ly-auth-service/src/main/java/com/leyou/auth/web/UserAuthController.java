@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -31,6 +32,14 @@ public class UserAuthController {
 
 
         this.userAuthService.userAuth(response,username,password);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> userLogout(HttpServletRequest request,HttpServletResponse response){
+
+        this.userAuthService.userLogout(request,response);
 
         return ResponseEntity.ok().build();
     }
