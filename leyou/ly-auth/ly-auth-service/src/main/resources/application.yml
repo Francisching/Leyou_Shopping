@@ -5,7 +5,7 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:mysql://ly-mysql:3306/heima
+    url: jdbc:mysql://ly-mysql:3306/heima?UseSSL=false
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

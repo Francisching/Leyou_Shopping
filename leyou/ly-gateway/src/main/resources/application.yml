@@ -64,6 +64,11 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**
+
+        - id: trade-service # 用户服务
+          uri: lb://trade-service
+          predicates:
+            - Path=/trade/**
   redis:
     host: ly-redis
 

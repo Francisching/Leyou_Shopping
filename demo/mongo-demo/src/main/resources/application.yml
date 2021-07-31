@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://leyou:123@ly-mongo/carts
+
+logging:
+  level:
+    org.springframework: debug
+    cn.itcast: debug

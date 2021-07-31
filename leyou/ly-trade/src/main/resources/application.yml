@@ -1,0 +1,29 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: trade-service
+  data:
+    mongodb:
+      uri: mongodb://leyou:123@ly-mongo/carts
+  redis:
+    host: ly-redis
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ly-registry:10086/eureka
+
+logging:
+  level:
+    com.leyou: debug
+
+ly:
+  auth:
+    clientId: trade-service
+    secret: 1234
+
+
+
+  mongo:
+    collectionNamePrefix: carts
