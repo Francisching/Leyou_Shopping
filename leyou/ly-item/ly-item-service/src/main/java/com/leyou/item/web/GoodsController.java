@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/goods")
@@ -146,7 +147,19 @@ public class GoodsController {
             @RequestParam("id") Long spuId,
             @RequestParam(value = "searching", required = false) Boolean searching) {
         return ResponseEntity.ok(this.goodsService.listSpecWithValue(spuId,searching));
+    }
 
+    /**
+     * 批量减库存
+     * @param skuMap
+     * @return
+     */
+    @PutMapping("/sku/minus/stock")
+    public ResponseEntity<Void> minusStock(
+            @RequestBody Map<Long,Integer> skuMap){
+
+        this.goodsService.minusStock(skuMap);
+        return ResponseEntity.ok().build();
     }
 
 }

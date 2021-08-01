@@ -39,4 +39,11 @@ public class CartController {
     public ResponseEntity<List<Cart>> listCarts(){
         return ResponseEntity.ok(this.cartService.listCarts());
     }
+
+    @PostMapping("/list")
+    public ResponseEntity<Void> batchAddCarts(@RequestBody List<Cart> carts) {
+
+        this.cartService.batchAddCarts(carts);
+        return ResponseEntity.ok().build();
+    }
 }

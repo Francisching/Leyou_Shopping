@@ -61,4 +61,9 @@ public class CartServiceImpl implements CartService {
         //u31s123456
         return String.format("u%ds%d",userId,skuId);
     }
+
+    @Override
+    public void batchAddCarts(List<Cart> carts) {
+        carts.forEach(this::addCart);
+    }
 }

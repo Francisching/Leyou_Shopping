@@ -307,12 +307,16 @@
         },
         loadSku(carts) {
           return new Promise((resolve, reject) => {
+              //map对元素进行挨个运算，取id，然后返回，最终获取了一个id数组
             const ids = carts.map(c => {
               c.saleable = false;
               return c.skuId;
             });
+            //ids.join(","),负责把数组转变为字符串
             ly.http.get("/item/goods/sku/list?ids=" + ids.join(",")).then(({ data: skus }) => {
+                //carts是原始数据不新鲜数据，skus是查询到的信息数据
               carts.forEach(c => {
+                  //拿旧的商品的id，在新的skus的数组中挨个比对，id相同说明此商品还在，
                 const sku = skus.find(s => s.id === c.skuId);
                 if (sku) {
                   c.newPrice = sku.price;
@@ -321,6 +325,8 @@
                   c.enable = sku.saleable;
                 } else {
                   c.enable = false;
+                  //给被删除掉的商品设置最新的价格，就是旧的价格，原因是前端展示的是newPrice
+                  c.newPrice = c.price;
                 }
               });
               resolve();
@@ -364,7 +370,7 @@
           })
         },
         handleLoginCarts() {
-          // 已登录
+          // 已登录,resp.data是后台查询到的sku的集合，
           ly.http.get("/trade/cart/list").then(resp => {
             if (!resp.data || resp.data.length <= 0) {
               // 提示

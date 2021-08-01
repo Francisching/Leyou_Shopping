@@ -11,4 +11,5 @@ public interface CartService {
 
     String idUtils(Long skuId,Long userId);
 
+    void batchAddCarts(List<Cart> carts);
 }

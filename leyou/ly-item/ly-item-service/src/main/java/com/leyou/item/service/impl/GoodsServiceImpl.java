@@ -161,7 +161,6 @@ public class GoodsServiceImpl implements GoodsService {
         this.amqpTemplate.convertAndSend("jhj", routingKey, spuId);
 
 
-
     }
 
     @Override
@@ -257,5 +256,13 @@ public class GoodsServiceImpl implements GoodsService {
 
 
         return specParamDTOS;
+    }
+
+    @Override
+    @Transactional
+    public void minusStock(Map<Long, Integer> skuMap) {
+        //1,先查询再减，第二种直接减
+
+        this.skuService.minusStock(skuMap);
     }
 }

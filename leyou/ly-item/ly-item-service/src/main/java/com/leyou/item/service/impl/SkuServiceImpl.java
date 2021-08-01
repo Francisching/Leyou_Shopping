@@ -7,7 +7,9 @@ import com.leyou.item.mapper.SkuMapper;
 import com.leyou.item.service.SkuService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuService {
@@ -20,5 +22,27 @@ public class SkuServiceImpl extends ServiceImpl<SkuMapper, Sku> implements SkuSe
     @Override
     public List<SkuDTO> listSkuByIds(List<Long> ids) {
         return SkuDTO.convertEntityList(this.listByIds(ids));
+    }
+
+    //statement，本质此时就是方法
+    private final String DEDUCT_STOCK_STATEMENT = "com.leyou.item.mapper.SkuMapper.minusStock";
+
+    @Override
+    public void minusStock(Map<Long,Integer> skuMap) {
+
+        //sqlSession连接一次
+        executeBatch(sqlSession -> {
+            for (Map.Entry<Long, Integer> entry : skuMap.entrySet()) {
+                // 准备参数
+                Map<String,Object> param = new HashMap<>();
+                param.put("id", entry.getKey());
+                param.put("num", entry.getValue());
+                // 编译statement，namespace.statementId
+                sqlSession.update(DEDUCT_STOCK_STATEMENT, param);
+            }
+            // 刷新，一次批量执行
+            sqlSession.flushStatements();
+        });
+
     }
 }

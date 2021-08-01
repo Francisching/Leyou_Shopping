@@ -8,6 +8,11 @@ spring:
       uri: mongodb://leyou:123@ly-mongo/carts
   redis:
     host: ly-redis
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://ly-mysql:3306/heima?useSSL=false
+    username: root
+    password: root
 
 eureka:
   client:
@@ -22,8 +27,11 @@ ly:
   auth:
     clientId: trade-service
     secret: 1234
-
-
-
   mongo:
     collectionNamePrefix: carts
+
+mybatis-plus:
+  type-aliases-package: com.leyou.trade.entity
+  global-config:
+    db-config:
+      id-type: auto

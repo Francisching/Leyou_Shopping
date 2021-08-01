@@ -1,5 +1,6 @@
 package com.leyou.user.client;
 
+import com.leyou.user.dto.AddressDTO;
 import com.leyou.user.dto.UserDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -20,4 +21,9 @@ public interface UserClient {
     UserDTO login(
             @RequestParam("username") String username,
             @RequestParam("password") String password);
+
+    @GetMapping("/address")
+    AddressDTO queryAddressById(
+            @RequestParam("id") Long id,
+            @RequestParam("userId") Long userId);
 }
