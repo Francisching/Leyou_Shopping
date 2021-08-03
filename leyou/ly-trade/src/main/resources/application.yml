@@ -22,16 +22,33 @@ eureka:
 logging:
   level:
     com.leyou: debug
+    org.springframework.jdbc.datasource: debug
 
 ly:
   auth:
     clientId: trade-service
     secret: 1234
+    excludeFilterPaths: #路径放行，因为微信不可能有登录的token
+      - /pay/wx/notify
+      - /error
   mongo:
     collectionNamePrefix: carts
+
+  pay:
+    wx:
+      appID: wx8397f8696b538317
+      mchID: 1473426802
+      key: T6m9iK73b0kn9g5v426MKfHQH7X8rKwb
+      notifyUrl: http://eww8qg.natappfree.cc/trade/pay/wx/notify
+      spbillCreateIp: 123.12.12.123
+
+
+
 
 mybatis-plus:
   type-aliases-package: com.leyou.trade.entity
   global-config:
     db-config:
       id-type: auto
+
+

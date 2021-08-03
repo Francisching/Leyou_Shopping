@@ -55,11 +55,24 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      *      * 抢购，秒杀，亏本运营，淘宝奥迪a4,5折，1辆，
      *      * 2000万，定时上架，1000,2万，入口毫秒555,2万人，后台二次过滤，5，队列，消费
      *      ？？？，多线程超卖，加锁，
+     *
+     *      锁？？？单线程，锁的本身是一个执行条件，要执行业务
+     *      必须先要获取锁，可以理解成锁只有一个，只能被一个线程获取
+     *      那么会争抢锁，
+     *      下单实际执行时加了全局锁，要执行下单业务
+     *      不论是谁先要获取全局锁，
+     *
      * @param orderDTO
      */
     @Override
     @Transactional
     public Long createOrder(OrderDTO orderDTO) {
+
+        //key是skuId，value商品数量
+        Map<Long, Integer> carts = orderDTO.getCarts();
+
+
+        this.itemClient.minusStock(carts);
 
         UserDetail user = UserContext.getUser();
 
@@ -87,8 +100,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setPaymentType(paymentType);
 
 
-        //key是skuId，value商品数量
-        Map<Long, Integer> carts = orderDTO.getCarts();
+
 
 
         //实际下单的商品的集合
@@ -147,7 +159,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
 
 
-        this.itemClient.minusStock(carts);
+        //throw new LyException(666,"故意捣乱");
+
+
 
 
         return order.getOrderId();
