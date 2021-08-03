@@ -66,18 +66,6 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!--微信sdk-->
-        <dependency>
-            <groupId>com.github.wxpay</groupId>
-            <artifactId>wxpay-sdk</artifactId>
-            <version>3.0.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
