@@ -11,7 +11,7 @@ import lombok.Data;
 @AllArgsConstructor(staticName = "of")
 @TableName("tb_category_brand")
 public class CategoryBrand {
-    // IdType.INPUT，代表主键采用自己填写湿哒哒而不是自增长。
+    // IdType.INPUT，代表主键采用自己33填写湿哒哒而不是自增长。
     @TableId(type = IdType.INPUT)
     private Long categoryId;
     @TableId(type = IdType.INPUT)
